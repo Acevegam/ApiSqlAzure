@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'ApiPaseLista'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D2B805C036BB4066B19B7C2DEA6EA885 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FC46101C72A04B83964A6492798E9F15 }}
