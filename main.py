@@ -3,11 +3,11 @@ import pyodbc
 
 app = Flask(__name__)
 
-# Configura tu conexión a Azure SQL
+# Configura conexión a Azure SQL
 server = 'paselista.database.windows.net'
 database = 'bbdPaseLista'
 username = 'adminsql'
-password = 'Paselista30'  # Cambiar a tu contraseña real
+password = 'Paselista30'
 driver = '{ODBC Driver 17 for SQL Server}'
 
 def get_connection():
