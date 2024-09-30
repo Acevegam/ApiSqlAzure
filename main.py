@@ -7,7 +7,7 @@ app = Flask(__name__)
 server = 'paselista.database.windows.net'
 database = 'bbdPaseLista'
 username = 'adminsql'
-password = 'tu_contraseña'  # Cambiar a tu contraseña real
+password = 'Paselista30'  # Cambiar a tu contraseña real
 driver = '{ODBC Driver 17 for SQL Server}'
 
 def get_connection():
