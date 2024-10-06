@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import pyodbc
+import pymssql
 import os
 
 app = Flask(__name__)
@@ -9,10 +9,14 @@ server = os.getenv('SQL_SERVER', 'paselista.database.windows.net')
 database = os.getenv('SQL_DATABASE', 'bbdPaseLista')
 username = os.getenv('SQL_USER', 'adminsql')
 password = os.getenv('SQL_PASSWORD', 'Paselista30')
-driver = '{ODBC Driver 17 for SQL Server}'
 
 def get_connection():
-    conn = pyodbc.connect(f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}')
+    conn = pymssql.connect(
+        server=server,
+        user=username,
+        password=password,
+        database=database
+    )
     return conn
 
 # Ruta raíz para evitar el error 404
@@ -39,7 +43,7 @@ def agregar_asistencia():
 
     try:
         cursor.execute(
-            "INSERT INTO asistencia (id_estudiante, matricula, fecha, hora) VALUES (?, ?, ?, ?)",
+            "INSERT INTO asistencia (id_estudiante, matricula, fecha, hora) VALUES (%d, %d, %s, %s)",
             (id_estudiante, matricula, fecha, hora)
         )
         conn.commit()
