@@ -1,37 +1,42 @@
 from flask import Flask, request, jsonify
 import pyodbc
+import os
 
 app = Flask(__name__)
 
-# Configura conexión a Azure SQL
-server = 'paselista.database.windows.net'
-database = 'bbdPaseLista'
-username = 'adminsql'
-password = 'Paselista30'
+# Cargar las credenciales de la base de datos desde las variables de entorno
+server = os.getenv('SQL_SERVER', 'paselista.database.windows.net')
+database = os.getenv('SQL_DATABASE', 'bbdPaseLista')
+username = os.getenv('SQL_USER', 'adminsql')
+password = os.getenv('SQL_PASSWORD', 'Paselista30')
 driver = '{ODBC Driver 17 for SQL Server}'
 
 def get_connection():
     conn = pyodbc.connect(f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}')
     return conn
 
-# El método POST crea información
-@app.route('/asistencia', methods=['POST'])
+# Ruta raíz para evitar el error 404
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"mensaje": "Bienvenido a la API de Pase de Lista"}), 200
 
+# El método POST crea información de asistencia
+@app.route('/asistencia', methods=['POST'])
 def agregar_asistencia():
     data = request.get_json()
-    
+
     # Validar que se proporcionen todos los datos necesarios
     if not all(key in data for key in ('id_estudiante', 'matricula', 'fecha', 'hora')):
         return jsonify({"error": "Faltan datos requeridos"}), 400
-    
+
     id_estudiante = data['id_estudiante']
     matricula = data['matricula']
     fecha = data['fecha']
     hora = data['hora']
-    
+
     conn = get_connection()
     cursor = conn.cursor()
-    
+
     try:
         cursor.execute(
             "INSERT INTO asistencia (id_estudiante, matricula, fecha, hora) VALUES (?, ?, ?, ?)",
