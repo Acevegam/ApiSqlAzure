@@ -16,6 +16,7 @@ def get_connection():
 
 # El método POST crea información
 @app.route('/asistencia', methods=['POST'])
+
 def agregar_asistencia():
     data = request.get_json()
     
@@ -30,12 +31,19 @@ def agregar_asistencia():
     
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO asistencia (id_estudiante, matricula, fecha, hora) VALUES (?, ?, ?, ?)",
-                   (id_estudiante, matricula, fecha, hora))
-    conn.commit()
-    conn.close()
     
-    return jsonify({"mensaje": "Asistencia registrada exitosamente"}), 201
+    try:
+        cursor.execute(
+            "INSERT INTO asistencia (id_estudiante, matricula, fecha, hora) VALUES (?, ?, ?, ?)",
+            (id_estudiante, matricula, fecha, hora)
+        )
+        conn.commit()
+        return jsonify({"mensaje": "Asistencia registrada exitosamente"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
